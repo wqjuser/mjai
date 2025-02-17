@@ -1459,8 +1459,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       "pid": int.parse(merchantID),
       "type": payMethod,
       "out_trade_no": result,
-      "notify_url": "https://oss.zxai.fun/notify",
-      "return_url": "https://oss.zxai.fun/notify",
+      "notify_url": GlobalParams.notifyUrl,
+      "return_url": GlobalParams.notifyUrl,
       "name": packageName,
       "money": money,
       "clientip": ip

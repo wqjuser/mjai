@@ -5,6 +5,7 @@ class GlobalParams {
   static String chatBaseUrl = 'xxx'; //自部署的聊天网页地址，目前已经没用了
   static String chatPageUrl = 'xxx'; //同上
   static String aiChatBaseUrl = 'xxx'; //同上
+  static String notifyUrl = 'xxx'; //易支付订单支付回调地址，请阅读易支付文档了解如何配置回调地址
   static bool isAdminVersion = true; //指定打包是否为管理员版本，不可与下面的值同为true
   static bool isFreeVersion = false; //指定打包版本是否为免费版本，不可与上面的值同为true，这两个值同为false的时候，打包为普通版本
   static String filesUrl = isFreeVersion
