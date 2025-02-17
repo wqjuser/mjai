@@ -900,7 +900,9 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
     const uuid = Uuid();
     final newUuid = uuid.v4();
     final randomEncryptKey = uuid.v4().substring(0, 8);
-    final path = Platform.isWindows ? '${envVars['USERPROFILE']}${Platform.pathSeparator}Pictures${Platform.pathSeparator}$dirName' : savePath;
+    final path = Platform.isWindows
+        ? '${envVars['USERPROFILE']}${Platform.pathSeparator}Pictures${Platform.pathSeparator}$dirName'
+        : savePath;
     Map<String, dynamic> settings = defaultSettings;
     settings['client_id'] = newUuid;
     settings['image_save_path'] = path;
@@ -1242,10 +1244,12 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
     await box.write('is_login', true);
     await box.write('user_id', user.id);
     await box.write('needRefreshSettings', true);
+    userQuotas = await checkUserQuota(user.id);
   }
 
   // 处理邀请码相关设置
-  Future<void> _handleInviteCodeSettings(Map<String, dynamic> savedSettings, BuildContext context, {String? inviteCode, String userId = ''}) async {
+  Future<void> _handleInviteCodeSettings(Map<String, dynamic> savedSettings, BuildContext context,
+      {String? inviteCode, String userId = ''}) async {
     final superUserData = await _supabaseHelper.query('my_users', {'invite_code': inviteCode ?? 'wqjuser'});
     final userData = await _supabaseHelper.query('my_users', {'user_id': userId});
     if (superUserData.isNotEmpty) {
@@ -1390,7 +1394,8 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
   // 获取数据库的可用ai模型
   Future<void> getAiModels() async {
     if (!GlobalParams.isFreeVersion) {
-      List<Map<String, dynamic>> aiModels = await SupabaseHelper().query('ai_models', {'is_delete': 0}, isOrdered: true, orderInfo: 'model_name');
+      List<Map<String, dynamic>> aiModels =
+          await SupabaseHelper().query('ai_models', {'is_delete': 0}, isOrdered: true, orderInfo: 'model_name');
       GlobalParams.aiModels = aiModels;
     }
   }
@@ -1610,8 +1615,8 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
     var settings = await Config.loadSettings();
     String userId = settings['user_id'] ?? '';
     if (settings['is_login'] ?? false) {
-      List<Map<String, dynamic>> images =
-          await SupabaseHelper().query('images', {'is_delete': 0, 'user_id': userId}, selectInfo: 'info', isOrdered: false, limitNum: 200);
+      List<Map<String, dynamic>> images = await SupabaseHelper()
+          .query('images', {'is_delete': 0, 'user_id': userId}, selectInfo: 'info', isOrdered: false, limitNum: 200);
       imagesList = images;
       if (imagesList.isNotEmpty) {
         int imagesLength = imagesList.length;
@@ -1728,8 +1733,8 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
       "pid": int.parse(merchantID),
       "type": payMethod,
       "out_trade_no": result,
-      "notify_url": GlobalParams.notifyUrl,
-      "return_url": GlobalParams.notifyUrl,
+      "notify_url": "https://oss.zxai.fun/notify",
+      "return_url": "https://oss.zxai.fun/notify",
       "name": packageName,
       "money": money,
       "clientip": ip
@@ -1786,7 +1791,8 @@ class MainViewModel extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  void dealPay(dio.Response<dynamic> response, String payMethod, String payName, Map<String, dynamic> payParams, BuildContext context) {
+  void dealPay(
+      dio.Response<dynamic> response, String payMethod, String payName, Map<String, dynamic> payParams, BuildContext context) {
     String? qrcode = response.data['qrcode'];
     String? codeUrl = response.data['code_url'];
     String? tradeNo = response.data['trade_no'];

@@ -225,8 +225,14 @@ class _AIChatPageState extends State<AIChatPage> {
       _chatTitleKeys.insert(0, GlobalKey());
       // 更新ValueNotifier
       _chatListNotifier.value = List.from(_chatListNotifier.value)
-        ..insert(0,
-            ChatListData(id: DateTime.now().millisecondsSinceEpoch, title: title, createTime: createTime, modelName: useAIModel, messagesCount: 0));
+        ..insert(
+            0,
+            ChatListData(
+                id: DateTime.now().millisecondsSinceEpoch,
+                title: title,
+                createTime: createTime,
+                modelName: useAIModel,
+                messagesCount: 0));
       _scrollToBottom();
       if (_leftScrollController.hasClients) {
         _leftScrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
@@ -312,11 +318,14 @@ class _AIChatPageState extends State<AIChatPage> {
     useImageSize = chatSettings['chatSettings_defaultImageSize'] = settings['chatSettings_defaultImageSize'] ?? '1024x1024';
     defaultAIResponseLanguage = chatSettings['chatSettings_defaultLanguage'] = settings['chatSettings_defaultLanguage'] ?? '自动选择';
     chatSettings['chatSettings_defaultGenerateTitleModel'] = settings['chatSettings_defaultGenerateTitleModel'] ?? '自动选择';
-    alwaysShowModelName = isMobile ? false : chatSettings['chatSettings_alwaysShowModelName'] = settings['chatSettings_alwaysShowModelName'] ?? false;
+    alwaysShowModelName = isMobile
+        ? false
+        : chatSettings['chatSettings_alwaysShowModelName'] = settings['chatSettings_alwaysShowModelName'] ?? false;
     autoGenerateTitle = chatSettings['chatSettings_autoGenerateTitle'] = settings['chatSettings_autoGenerateTitle'] ?? true;
     enableNet = chatSettings['chatSettings_enableNet'] = settings['chatSettings_enableNet'] ?? false;
     _encryptKey = chatSettings['chatSettings_privateModeKey'] = settings['chatSettings_privateModeKey'] ?? '';
-    _closeWindowWhenCapturing = chatSettings['chatSettings_captureCloseWindow'] = settings['chatSettings_captureCloseWindow'] ?? false;
+    _closeWindowWhenCapturing =
+        chatSettings['chatSettings_captureCloseWindow'] = settings['chatSettings_captureCloseWindow'] ?? false;
     chatSettings['chatSettings_useNetUrl'] = settings['chatSettings_useNetUrl'] ?? '';
     chatSettings['chatSettings_netSearch'] = settings['chatSettings_netSearch'] ?? '5.0';
     chatSettings['chatSettings_apiUrl'] = settings['chatSettings_apiUrl'] ?? '';
@@ -346,8 +355,10 @@ class _AIChatPageState extends State<AIChatPage> {
       }
       var settings = await Config.loadSettings();
       String userId = settings['user_id'] ?? '';
-      await SupabaseHelper().update('chat_list', {'is_delete': 1}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
-      await SupabaseHelper().update('chat_contents', {'is_delete': 1}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper()
+          .update('chat_list', {'is_delete': 1}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper()
+          .update('chat_contents', {'is_delete': 1}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     } catch (e) {
       commonPrint('聊天删除失败，原因是$e');
     }
@@ -399,7 +410,8 @@ class _AIChatPageState extends State<AIChatPage> {
     try {
       settings = await Config.loadSettings();
       String userId = settings['user_id'] ?? '';
-      final List<Map<String, dynamic>> maps = await SupabaseHelper().query('chat_list', {'is_delete': 0, 'user_id': userId}, isOrdered: false);
+      final List<Map<String, dynamic>> maps =
+          await SupabaseHelper().query('chat_list', {'is_delete': 0, 'user_id': userId}, isOrdered: false);
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
           _chatTitleKeys.add(GlobalKey());
@@ -482,8 +494,13 @@ class _AIChatPageState extends State<AIChatPage> {
   Future<void> _addMessageToChat(String text, {bool isFinal = false}) async {
     if (messages.isEmpty || messages.last.isSentByMe) {
       String sendTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-      messages.add(
-          ChatMessage(isSentByMe: false, text: '思考中，请稍后...', model: useAIModel, sendTime: sendTime, isPrivate: _useEncrypt, encryptKey: _encryptKey));
+      messages.add(ChatMessage(
+          isSentByMe: false,
+          text: '思考中，请稍后...',
+          model: useAIModel,
+          sendTime: sendTime,
+          isPrivate: _useEncrypt,
+          encryptKey: _encryptKey));
       _keys.add(GlobalKey());
       setState(() {}); // 立即显示"思考中"的消息
     }
@@ -576,9 +593,10 @@ class _AIChatPageState extends State<AIChatPage> {
       }
       setState(() {});
       String userId = settings['user_id'] ?? '';
+      await SupabaseHelper().update('chat_list', {'title': currentTitle, 'isChangedTitle': 1},
+          updateMatchInfo: {'user_id': userId, 'createTime': createTime});
       await SupabaseHelper()
-          .update('chat_list', {'title': currentTitle, 'isChangedTitle': 1}, updateMatchInfo: {'user_id': userId, 'createTime': createTime});
-      await SupabaseHelper().update('chat_contents', {'title': currentTitle}, updateMatchInfo: {'user_id': userId, 'createTime': createTime});
+          .update('chat_contents', {'title': currentTitle}, updateMatchInfo: {'user_id': userId, 'createTime': createTime});
     }
   }
 
@@ -694,7 +712,8 @@ class _AIChatPageState extends State<AIChatPage> {
         _keys.add(GlobalKey());
         String messagesJson = jsonEncode([messages.last.toJson()]);
         String userId = settings['user_id'] ?? '';
-        SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1}, updateMatchInfo: {'user_id': userId, 'createTime': createTime});
+        SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1},
+            updateMatchInfo: {'user_id': userId, 'createTime': createTime});
         SupabaseHelper().insert('chat_contents', {
           'title': currentTitle,
           'createTime': createTime,
@@ -790,8 +809,8 @@ class _AIChatPageState extends State<AIChatPage> {
                       useAIModel.contains('claude') ||
                       useAIModel.contains('智谱AI免费') ||
                       useAIModel.contains('带思考')) {
-                    final userMessageNew =
-                        ChatCompletionMessageContentPart.image(imageUrl: ChatCompletionMessageImageUrl(url: fileUrl == '' ? fileContent : fileUrl));
+                    final userMessageNew = ChatCompletionMessageContentPart.image(
+                        imageUrl: ChatCompletionMessageImageUrl(url: fileUrl == '' ? fileContent : fileUrl));
                     currentMessagesPartsNew.add(userMessageNew);
                   } else {
                     fileUrls += '文件$fileName的在线路径是 $fileContent\n';
@@ -890,8 +909,8 @@ class _AIChatPageState extends State<AIChatPage> {
           currentChatTokens = await countCurrentChatTokens(currentMessagesNew, realModelId);
         }
         isSeniorChat = isSeniorModel(useAIModel);
-        userChatAvailableInfo = await checkChatAvailability(
-            isSeniorChat, canUsedSeniorChatNum, canUsedCommonChatNum, canUsedTokens, currentChatTokens, canUseChatNum, canUseTokens);
+        userChatAvailableInfo = await checkChatAvailability(isSeniorChat, canUsedSeniorChatNum, canUsedCommonChatNum,
+            canUsedTokens, currentChatTokens, canUseChatNum, canUseTokens);
         if (!GlobalParams.isAdminVersion && !GlobalParams.isFreeVersion) {
           bool canChat = userChatAvailableInfo['canChat'];
           if (!canChat) {
@@ -908,9 +927,14 @@ class _AIChatPageState extends State<AIChatPage> {
             useAIModel.contains('R1') ||
             (useAIModel.contains('逆向') && !useAIModel.contains('满血'))) {
           Map settings = await Config.loadSettings();
-          String apiKey = settings['chatSettings_apiKey'] ?? settings['chat_api_key'] ?? '';
+          String apiKey = '';
+          if (settings['chatSettings_apiKey'] == '' || settings['chatSettings_apiKey'] == null) {
+            apiKey = settings['chat_api_key'] ?? '';
+          } else {
+            apiKey = settings['chatSettings_apiKey'];
+          }
           String urlPrefix = settings['chatSettings_apiUrl'] ?? '';
-          String setsUrlPrefix = settings['chatSettings_apiUrl'] ?? '';
+          String setsUrlPrefix = settings['chat_api_url'] ?? '';
           String baseUrl = '${urlPrefix.isEmpty ? setsUrlPrefix.isEmpty ? '' : setsUrlPrefix : urlPrefix}/v1/chat/completions';
           List<Map<String, dynamic>>? thisMessages = [];
           for (int j = 0; j < currentMessagesNew.length - 1; j++) {
@@ -922,7 +946,8 @@ class _AIChatPageState extends State<AIChatPage> {
               thisMessages.add(currentMessagesNew[j].toJson());
             }
           }
-          var thisLastMessage = (currentMessagesNew[currentMessagesNew.length - 1].content as ChatCompletionMessageContentParts).toJson();
+          var thisLastMessage =
+              (currentMessagesNew[currentMessagesNew.length - 1].content as ChatCompletionMessageContentParts).toJson();
           if (thisLastMessage['value'] != null && thisLastMessage['value'] is List) {
             if (thisLastMessage['value'].length == 1) {
               thisMessages.add({"role": "user", "content": thisLastMessage['value'][0]['text']});
@@ -935,7 +960,7 @@ class _AIChatPageState extends State<AIChatPage> {
           bool isR1Model = realModelId.contains('reasoner');
           if (isR1Model) {
             if (thisMessages.length > 1) {
-              if (thisMessages[0]['role']=='assistant') {
+              if (thisMessages[0]['role'] == 'assistant') {
                 thisMessages.removeAt(0);
               }
             }
@@ -1002,7 +1027,8 @@ class _AIChatPageState extends State<AIChatPage> {
                 }
               },
               onDone: () async {
-                updateUserPackagesInfo(userChatAvailableInfo, currentChatTokens, isSeniorChat, canUsedSeniorChatNum, canUsedCommonChatNum);
+                updateUserPackagesInfo(
+                    userChatAvailableInfo, currentChatTokens, isSeniorChat, canUsedSeniorChatNum, canUsedCommonChatNum);
                 await finishChat();
               },
               onError: (error) async {
@@ -1060,7 +1086,8 @@ class _AIChatPageState extends State<AIChatPage> {
               if (index != -1) {
                 result = errorMessage.substring(0, index).trim();
               }
-              dio.Options myOptions = dio.Options(headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer wqjuser'});
+              dio.Options myOptions =
+                  dio.Options(headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer wqjuser'});
               var response = await myApi.myTranslate({"text": result, "source_lang": "EN", "target_lang": "ZH"}, myOptions);
               if (response.statusCode == 200) {
                 _addMessageToChat("请求异常：${response.data['data']} 请尝试更换模型，或者与管理员联系。", isFinal: true);
@@ -1122,8 +1149,8 @@ class _AIChatPageState extends State<AIChatPage> {
     }
   }
 
-  Future<Map<String, dynamic>> checkChatAvailability(int isSeniorChat, int canUsedSeniorChatNum, int canUsedCommonChatNum, int canUsedTokens,
-      int currentTokens, bool canUseChatNum, bool canUseTokens) async {
+  Future<Map<String, dynamic>> checkChatAvailability(int isSeniorChat, int canUsedSeniorChatNum, int canUsedCommonChatNum,
+      int canUsedTokens, int currentTokens, bool canUseChatNum, bool canUseTokens) async {
     // 检查是否是高级模型
     int availableChats = isSeniorChat == 1 ? canUsedSeniorChatNum : canUsedCommonChatNum;
     // 检查次数和token
@@ -1136,7 +1163,8 @@ class _AIChatPageState extends State<AIChatPage> {
           String sendTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
           await onMessageDelete(messages.length - 1,
               needChangeValue: false,
-              message: ChatMessage(text: '抱歉，您的对话额度不足，请[购买套餐](page:/buy)后再试。', isSentByMe: false, model: '魔镜AI', sendTime: sendTime));
+              message:
+                  ChatMessage(text: '抱歉，您的对话额度不足，请[购买套餐](page:/buy)后再试。', isSentByMe: false, model: '魔镜AI', sendTime: sendTime));
         }
         Map<String, dynamic> map = {'canChat': false};
         return map;
@@ -1206,8 +1234,8 @@ class _AIChatPageState extends State<AIChatPage> {
                 useAIModel.contains('claude') ||
                 useAIModel.contains('智谱AI免费') ||
                 useAIModel.contains('带思考')) {
-              final userMessageNew =
-                  ChatCompletionMessageContentPart.image(imageUrl: ChatCompletionMessageImageUrl(url: fileUrl == '' ? fileContent : fileUrl));
+              final userMessageNew = ChatCompletionMessageContentPart.image(
+                  imageUrl: ChatCompletionMessageImageUrl(url: fileUrl == '' ? fileContent : fileUrl));
               currentMessagesPartsNew.add(userMessageNew);
             } else {
               fileUrls += '文件$fileName的在线路径是$fileContent ';
@@ -1250,7 +1278,8 @@ class _AIChatPageState extends State<AIChatPage> {
     tempInt = 0;
     var settings = await Config.loadSettings();
     String userId = settings['user_id'] ?? '';
-    SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1}, updateMatchInfo: {'user_id': userId, 'createTime': createTime});
+    SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1},
+        updateMatchInfo: {'user_id': userId, 'createTime': createTime});
     String messagesJson = jsonEncode([messages.last.toJson()]);
     if (_useEncrypt && _encryptKey != '') {
       messages.last.isEncrypted = true;
@@ -1380,7 +1409,8 @@ class _AIChatPageState extends State<AIChatPage> {
           if (mounted) {
             messages.removeLast();
             String sendTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-            messages.add(ChatMessage(text: 'MJ绘图任务提交失败\n原因是${data['description']}', isSentByMe: false, model: useAIModel, sendTime: sendTime));
+            messages.add(ChatMessage(
+                text: 'MJ绘图任务提交失败\n原因是${data['description']}', isSentByMe: false, model: useAIModel, sendTime: sendTime));
             setState(() {
               isAnswering = false;
             });
@@ -1391,7 +1421,8 @@ class _AIChatPageState extends State<AIChatPage> {
         if (mounted) {
           messages.removeLast();
           String sendTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
-          messages.add(ChatMessage(text: 'MJ绘图任务提交失败\n原因是${response.statusMessage}', isSentByMe: false, model: useAIModel, sendTime: sendTime));
+          messages.add(ChatMessage(
+              text: 'MJ绘图任务提交失败\n原因是${response.statusMessage}', isSentByMe: false, model: useAIModel, sendTime: sendTime));
           setState(() {
             isAnswering = false;
           });
@@ -1480,8 +1511,8 @@ class _AIChatPageState extends State<AIChatPage> {
                   _scrollToBottom();
                   var settings = await Config.loadSettings();
                   String userId = settings['user_id'] ?? '';
-                  final response =
-                      await SupabaseHelper().runRPC('consume_user_quota', {'p_user_id': userId, 'p_quota_type': 'fast_drawing', 'p_amount': 1});
+                  final response = await SupabaseHelper()
+                      .runRPC('consume_user_quota', {'p_user_id': userId, 'p_quota_type': 'fast_drawing', 'p_amount': 1});
                   if (response['code'] == 200) {
                     commonPrint('消耗图片绘制额度成功');
                   } else {
@@ -1593,8 +1624,8 @@ class _AIChatPageState extends State<AIChatPage> {
         'fps': int.parse(videoFPS)
       };
       commonPrint(requestBody);
-      dio.Response response =
-          await myApi.zhipuGenerateVideo(requestBody, dio.Options(headers: {'Authorization': 'Bearer ${config['zpai_api_key']}'}));
+      dio.Response response = await myApi.zhipuGenerateVideo(
+          requestBody, dio.Options(headers: {'Authorization': 'Bearer ${config['zpai_api_key']}'}));
       if (response.statusCode == 200) {
         if (response.data is String) {
           response.data = jsonDecode(response.data);
@@ -1626,8 +1657,8 @@ class _AIChatPageState extends State<AIChatPage> {
   //已实现 文件服务地址是 https://file.zxai.fun 这里需要将文件放在body里面传递给接口，等待接口返回文件内容
 
   Future<void> uploadFileAndGetContent() async {
-    FilePickerResult? result = await FilePickerManager()
-        .pickFiles(type: FileType.custom, allowedExtensions: ['txt', 'jpg', 'png', 'jpeg', 'mp3', 'wav', 'docx', 'pdf', 'pptx', 'xlsx']);
+    FilePickerResult? result = await FilePickerManager().pickFiles(
+        type: FileType.custom, allowedExtensions: ['txt', 'jpg', 'png', 'jpeg', 'mp3', 'wav', 'docx', 'pdf', 'pptx', 'xlsx']);
     if (result != null) {
       String filePath = result.files.single.path ?? '';
       if (filePath != '') {
@@ -1775,7 +1806,8 @@ class _AIChatPageState extends State<AIChatPage> {
       String fileType = filePath.split('.').last;
       if (needOss) {
         fileUrl = GlobalParams.filesUrl +
-            await uploadFileToALiOss(filePath, '', thisFile, fileType: fileType, needDelete: false, setFileName: fileNameWithoutExtension);
+            await uploadFileToALiOss(filePath, '', thisFile,
+                fileType: fileType, needDelete: false, setFileName: fileNameWithoutExtension);
         if (isVideoImage) {
           videoImagePath = fileUrl;
         }
@@ -1788,8 +1820,8 @@ class _AIChatPageState extends State<AIChatPage> {
         }
       });
       if (fileName.endsWith('jpg') || fileName.endsWith('png') || fileName.endsWith('jpeg')) {
-        dio.Response uploadResponse =
-            await myApi.uploadFile(formData, cancelToken: uploadingFile.cancelToken, options: dio.Options(sendTimeout: const Duration(seconds: 120)));
+        dio.Response uploadResponse = await myApi.uploadFile(formData,
+            cancelToken: uploadingFile.cancelToken, options: dio.Options(sendTimeout: const Duration(seconds: 120)));
         if (uploadResponse.statusCode == 200 && uploadResponse.data['status']) {
           String fileContent = removeExtraSpaces(uploadResponse.data['content']);
           setState(() {
@@ -1830,8 +1862,10 @@ class _AIChatPageState extends State<AIChatPage> {
           });
           commonPrint('文件 $fileName 上传成功');
           String fileId = uploadResponse.data['id'];
-          dio.Response fileContentResponse = await myApi.getFileContentFromMoonshot('https://api.moonshot.cn/v1/files/$fileId/content',
-              options: dio.Options(headers: {'Authorization': 'Bearer $moonshotApiKey'}), cancelToken: uploadingFile.cancelToken);
+          dio.Response fileContentResponse = await myApi.getFileContentFromMoonshot(
+              'https://api.moonshot.cn/v1/files/$fileId/content',
+              options: dio.Options(headers: {'Authorization': 'Bearer $moonshotApiKey'}),
+              cancelToken: uploadingFile.cancelToken);
           if (fileContentResponse.statusCode == 200) {
             String fileContent = removeExtraSpaces(fileContentResponse.data['content']);
             setState(() {
@@ -1891,8 +1925,8 @@ class _AIChatPageState extends State<AIChatPage> {
     try {
       settings = await Config.loadSettings();
       String userId = settings['user_id'] ?? '';
-      List<Map<String, Object?>> maps =
-          await SupabaseHelper().query('chat_contents', {'is_delete': 0, 'createTime': createTime, 'user_id': userId}, isOrdered: true);
+      List<Map<String, Object?>> maps = await SupabaseHelper()
+          .query('chat_contents', {'is_delete': 0, 'createTime': createTime, 'user_id': userId}, isOrdered: true);
       var chats = List<ChatMessage>.from([]);
       if (maps.isNotEmpty) {
         for (int i = 0; i < maps.length; i++) {
@@ -2125,15 +2159,18 @@ class _AIChatPageState extends State<AIChatPage> {
       curChatSet['chatSettings_defaultModel'] = value;
       curChatSet['chatSettings_enableNet'] = enableNet;
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
-      await SupabaseHelper().update('chat_list', {'modelName': value}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper()
+          .update('chat_list', {'modelName': value}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_autoGenerateTitle', (value) async {
       autoGenerateTitle = value;
       curChatSet['chatSettings_autoGenerateTitle'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     //视频生成参数开始
     box.listenKey('chatSettings_defaultVideoSize', (value) async {
@@ -2141,28 +2178,32 @@ class _AIChatPageState extends State<AIChatPage> {
       curChatSet['chatSettings_defaultVideoSize'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_defaultVideoDuration', (value) async {
       videoDuration = value;
       curChatSet['chatSettings_defaultVideoDuration'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_defaultVideoFPS', (value) async {
       videoFPS = value;
       curChatSet['chatSettings_defaultVideoFPS'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_isAiSound', (value) async {
       aiSound = value;
       curChatSet['chatSettings_defaultVideoSize'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_videoImagePath', (value) async {
       videoImagePath = value;
@@ -2196,7 +2237,8 @@ class _AIChatPageState extends State<AIChatPage> {
       curChatSet['chatSettings_videoImagePath'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     //视频生成参数结束
     box.listenKey('chatSettings_enableChatContext', (value) async {
@@ -2204,14 +2246,16 @@ class _AIChatPageState extends State<AIChatPage> {
       curChatSet['chatSettings_enableChatContext'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_defaultImageSize', (value) async {
       useImageSize = value;
       curChatSet['chatSettings_defaultImageSize'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_enableNet', (value) async {
       if (!useAIModel.contains('联网')) {
@@ -2219,8 +2263,8 @@ class _AIChatPageState extends State<AIChatPage> {
         curChatSet['chatSettings_enableNet'] = value;
         setState(() {});
         String curChatSetStr = jsonEncode(curChatSet);
-        await SupabaseHelper()
-            .update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+        await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+            updateMatchInfo: {'createTime': createTime, 'user_id': userId});
       }
     });
     box.listenKey('chatSettings_alwaysShowModelName', (value) async {
@@ -2228,49 +2272,56 @@ class _AIChatPageState extends State<AIChatPage> {
       curChatSet['chatSettings_alwaysShowModelName'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_captureCloseWindow', (value) async {
       _closeWindowWhenCapturing = value;
       curChatSet['chatSettings_captureCloseWindow'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_maxTokens', (value) async {
       maxTokens = int.parse(value);
       curChatSet['chatSettings_maxTokens'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_tem', (value) async {
       tem = value;
       curChatSet['chatSettings_tem'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_top_p', (value) async {
       tp = value;
       curChatSet['chatSettings_top_p'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_fp', (value) async {
       fp = value;
       curChatSet['chatSettings_fp'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_pp', (value) async {
       pp = value;
       curChatSet['chatSettings_pp'] = value;
       setState(() {});
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_apiUrl', (value) async {
       //对话接口地址发生更改
@@ -2287,27 +2338,31 @@ class _AIChatPageState extends State<AIChatPage> {
         defaultAIResponseLanguage = value;
       });
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_defaultGenerateTitleModel', (value) async {
       //生成标题的模型发生更改
       curChatSet['chatSettings_defaultGenerateTitleModel'] = value;
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_enablePrivateMode', (value) async {
       //隐私模式发生更改
       curChatSet['chatSettings_enablePrivateMode'] = value;
       _useEncrypt = value;
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('chatSettings_privateModeKey', (value) async {
       //隐私模式加密Key发生更改
       curChatSet['chatSettings_privateModeKey'] = value;
       _encryptKey = value;
       String curChatSetStr = jsonEncode(curChatSet);
-      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      await SupabaseHelper().update('chat_contents', {'chatSettings': curChatSetStr},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
     });
     box.listenKey('is_login', (value) async {
       //用户登录状态发生变化，重新获取数据
@@ -2623,8 +2678,8 @@ class _AIChatPageState extends State<AIChatPage> {
       if (encryptedKeyword.isNotEmpty) {
         orInfo = '$orInfo,content.ilike.%$encryptedKeyword%';
       }
-      final response = await SupabaseHelper()
-          .query('chat_contents', {'is_delete': 0, 'user_id': userId}, selectInfo: 'createTime,content', isOrdered: false, orInfo: orInfo);
+      final response = await SupabaseHelper().query('chat_contents', {'is_delete': 0, 'user_id': userId},
+          selectInfo: 'createTime,content', isOrdered: false, orInfo: orInfo);
       // 解析 content 字段并进行内容匹配
       Set<String> matchedCreateTimes = {};
       if (response.isEmpty) {
@@ -2675,7 +2730,8 @@ class _AIChatPageState extends State<AIChatPage> {
       }
       var settings = await Config.loadSettings();
       String userId = settings['user_id'] ?? '';
-      SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1}, updateMatchInfo: {'createTime': createTime, 'user_id': userId});
+      SupabaseHelper().update('chat_list', {'messagesCount': messages.length - 1},
+          updateMatchInfo: {'createTime': createTime, 'user_id': userId});
       var readMessages = await SupabaseHelper().query('chat_contents', {'createTime': createTime, 'user_id': userId});
       if (readMessages.isNotEmpty) {
         for (int i = 0; i < readMessages.length; i++) {
@@ -3128,7 +3184,9 @@ class _AIChatPageState extends State<AIChatPage> {
                                           child: Container(
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: _isMultiSelectMode ? settings.getSelectedBgColor() : settings.getBackgroundColor(),
+                                              color: _isMultiSelectMode
+                                                  ? settings.getSelectedBgColor()
+                                                  : settings.getBackgroundColor(),
                                               borderRadius: BorderRadius.circular(8),
                                               border: Border.all(color: settings.getBorderColor()),
                                             ),
@@ -3160,7 +3218,9 @@ class _AIChatPageState extends State<AIChatPage> {
                                                   _selectedItems.clear();
                                                   for (int i = 0; i < _chatListNotifier.value.length; i++) {
                                                     if (_searchKeyword.isEmpty ||
-                                                        _chatListNotifier.value[i].title.toLowerCase().contains(_searchKeyword.toLowerCase())) {
+                                                        _chatListNotifier.value[i].title
+                                                            .toLowerCase()
+                                                            .contains(_searchKeyword.toLowerCase())) {
                                                       _selectedItems.add(i);
                                                     }
                                                   }
@@ -3226,15 +3286,18 @@ class _AIChatPageState extends State<AIChatPage> {
                                                             final chatItem = value[index];
                                                             // 同时检查标题和内容匹配
                                                             final bool matchesSearch = _searchKeyword.isEmpty ||
-                                                                chatItem.title.toLowerCase().contains(_searchKeyword.toLowerCase()) ||
+                                                                chatItem.title
+                                                                    .toLowerCase()
+                                                                    .contains(_searchKeyword.toLowerCase()) ||
                                                                 _searchMatchedCreateTimes.contains(chatItem.createTime);
 
                                                             if (!matchesSearch) {
                                                               return const SizedBox.shrink();
                                                             }
                                                             _hovering[index] = _hovering[index] ?? false;
-                                                            final bool isSelected =
-                                                                _isMultiSelectMode ? _selectedItems.contains(index) : _selectedIndex == index;
+                                                            final bool isSelected = _isMultiSelectMode
+                                                                ? _selectedItems.contains(index)
+                                                                : _selectedIndex == index;
                                                             return MouseRegion(
                                                               key: _chatTitleKeys[index],
                                                               onEnter: (event) => setState(() => _hovering[index] = true),
@@ -3299,7 +3362,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                         color: settings.getBackgroundColor(),
                                                                         borderRadius: BorderRadius.circular(10),
                                                                         border: isSelected
-                                                                            ? Border.all(color: settings.getBorderColor(), width: 2)
+                                                                            ? Border.all(
+                                                                                color: settings.getBorderColor(), width: 2)
                                                                             : null,
                                                                         boxShadow: [
                                                                           BoxShadow(
@@ -3331,12 +3395,14 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                           ),
                                                                         Expanded(
                                                                           child: ListTile(
-                                                                            contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                                            contentPadding:
+                                                                                const EdgeInsets.symmetric(horizontal: 8.0),
                                                                             title: Row(
                                                                               children: [
                                                                                 ClipOval(
                                                                                   child: ExtendedImage.asset(
-                                                                                    getAvatarImage(value[index].modelName ?? '', false),
+                                                                                    getAvatarImage(
+                                                                                        value[index].modelName ?? '', false),
                                                                                     width: 24,
                                                                                     height: 24,
                                                                                   ),
@@ -3365,7 +3431,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                                       Text(
                                                                                         '${value[index].messagesCount}条对话',
                                                                                         style: TextStyle(
-                                                                                            fontSize: 12, color: settings.getHintTextColor()),
+                                                                                            fontSize: 12,
+                                                                                            color: settings.getHintTextColor()),
                                                                                       )
                                                                                     ],
                                                                                   ),
@@ -3381,7 +3448,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                                         Text(
                                                                                           value[index].createTime,
                                                                                           style: TextStyle(
-                                                                                              fontSize: 12, color: settings.getHintTextColor()),
+                                                                                              fontSize: 12,
+                                                                                              color: settings.getHintTextColor()),
                                                                                         ),
                                                                                       ],
                                                                                     )),
@@ -3391,7 +3459,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                         ),
                                                                       ]),
                                                                     ),
-                                                                    if (_hovering[index]! && !_isMultiSelectMode) // 只有在鼠标悬停时才显示删除图标
+                                                                    if (_hovering[index]! &&
+                                                                        !_isMultiSelectMode) // 只有在鼠标悬停时才显示删除图标
                                                                       Positioned(
                                                                         top: 16,
                                                                         right: 16,
@@ -3529,13 +3598,16 @@ class _AIChatPageState extends State<AIChatPage> {
                               ),
                             )
                           ],
-                          if ((isMobile && !_showLeftPanel) || !isMobile || (isMobile && orientation == Orientation.landscape)) ...[
+                          if ((isMobile && !_showLeftPanel) ||
+                              !isMobile ||
+                              (isMobile && orientation == Orientation.landscape)) ...[
                             // 右侧面板
                             Expanded(
                               child: DragDropWidget(
                                 showDropMask: true,
                                 dropHintTextColor: settings.getForegroundColor(),
-                                dropMaskColor: getRealDarkMode(settings) ? Colors.white.withAlpha(128) : Colors.black.withAlpha(128),
+                                dropMaskColor:
+                                    getRealDarkMode(settings) ? Colors.white.withAlpha(128) : Colors.black.withAlpha(128),
                                 onDragDone: (details) async {
                                   if (_enableDrop) {
                                     showDialog(
@@ -3585,7 +3657,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                   uploadingFiles.add(UploadingFile(
                                                     key: getCurrentTimestamp() + const Uuid().v4(),
                                                     // 创建唯一的key
-                                                    file: PlatformFile(name: details.files[i].name, path: details.files[i].path, size: 0),
+                                                    file: PlatformFile(
+                                                        name: details.files[i].name, path: details.files[i].path, size: 0),
                                                     cancelToken: dio.CancelToken(),
                                                     isPrivate: _useEncrypt,
                                                     encryptKey: _encryptKey,
@@ -3625,7 +3698,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                     _showUserQuotaDialog(context: context, userName: messages[index].userName);
                                                   } else {
                                                     if (messages[index].model != '魔镜AI') {
-                                                      _showFeatureDescription(context, messages[index].model, Colors.blueAccent, settings);
+                                                      _showFeatureDescription(
+                                                          context, messages[index].model, Colors.blueAccent, settings);
                                                     }
                                                   }
                                                 },
@@ -3802,9 +3876,11 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                               Center(
                                                                                 child: isImageFile(uploadingFile.file.name)
                                                                                     ? _buildProgressLayout(
-                                                                                        isImage: true, settings: settings) // 图片上传布局
+                                                                                        isImage: true,
+                                                                                        settings: settings) // 图片上传布局
                                                                                     : _buildProgressLayout(
-                                                                                        isImage: false, settings: settings), // 文件上传布局
+                                                                                        isImage: false,
+                                                                                        settings: settings), // 文件上传布局
                                                                               ),
                                                                             ],
                                                                           ),
@@ -3818,11 +3894,12 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                           onTap: () {
                                                                             setState(() {
                                                                               uploadingFile.cancelToken?.cancel('取消上传');
-                                                                              allUploadedFiles.removeWhere((file) => file.key == uploadingFile.key);
+                                                                              allUploadedFiles.removeWhere(
+                                                                                  (file) => file.key == uploadingFile.key);
                                                                               hasFileUploaded = checkUploadFileStatus();
                                                                               tempFiles = List.from(allUploadedFiles);
-                                                                              _questionList
-                                                                                  .retainWhere((question) => question.key == uploadingFile.key);
+                                                                              _questionList.retainWhere((question) =>
+                                                                                  question.key == uploadingFile.key);
                                                                             });
                                                                           },
                                                                           child: Container(
@@ -3855,7 +3932,9 @@ class _AIChatPageState extends State<AIChatPage> {
                                               valueListenable: _controller,
                                               builder: (context, value, child) {
                                                 return Row(
-                                                  crossAxisAlignment: !value.text.contains('\n') ? CrossAxisAlignment.center : CrossAxisAlignment.end,
+                                                  crossAxisAlignment: !value.text.contains('\n')
+                                                      ? CrossAxisAlignment.center
+                                                      : CrossAxisAlignment.end,
                                                   children: [
                                                     // 使用Expanded使文本输入框填充左侧空间
                                                     Expanded(
@@ -3880,8 +3959,9 @@ class _AIChatPageState extends State<AIChatPage> {
                                                             minLines: 1,
                                                             style: TextStyle(color: settings.getForegroundColor(), fontSize: 16),
                                                             decoration: InputDecoration(
-                                                              hintText:
-                                                                  (Platform.isWindows || Platform.isMacOS) ? 'enter键发送，shift+enter键换行' : '提出你的问题吧',
+                                                              hintText: (Platform.isWindows || Platform.isMacOS)
+                                                                  ? 'enter键发送，shift+enter键换行'
+                                                                  : '提出你的问题吧',
                                                               hintStyle: TextStyle(
                                                                 color: settings.getForegroundColor().withAlpha(128),
                                                               ),
@@ -3918,8 +3998,12 @@ class _AIChatPageState extends State<AIChatPage> {
                                                               setState(() {
                                                                 allUploadedFiles.clear();
                                                               });
-                                                              await updateUserPackagesInfo(userChatAvailableInfo, currentChatTokens, isSeniorChat,
-                                                                  canUsedSeniorChatNum, canUsedCommonChatNum);
+                                                              await updateUserPackagesInfo(
+                                                                  userChatAvailableInfo,
+                                                                  currentChatTokens,
+                                                                  isSeniorChat,
+                                                                  canUsedSeniorChatNum,
+                                                                  canUsedCommonChatNum);
                                                               await finishChat();
                                                             } else {
                                                               _sendMessagePre();
@@ -3929,7 +4013,9 @@ class _AIChatPageState extends State<AIChatPage> {
                                                             width: 40.0,
                                                             height: 40.0,
                                                             decoration: BoxDecoration(
-                                                              color: (value.text.trimRight().isEmpty && !hasFileUploaded && !isAnswering)
+                                                              color: (value.text.trimRight().isEmpty &&
+                                                                      !hasFileUploaded &&
+                                                                      !isAnswering)
                                                                   ? const Color(0xFFD7D7D7)
                                                                   : settings.getSelectedBgColor(), // 圆形的背景颜色
                                                               shape: BoxShape.circle, // 设置为圆形
@@ -3948,7 +4034,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                         // 用于区分不同的图标
                                                                         width: 20,
                                                                         height: 20,
-                                                                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                                                        colorFilter:
+                                                                            const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                                                                         semanticsLabel: 'stop',
                                                                       )
                                                                     : SvgPicture.asset(
@@ -3957,7 +4044,8 @@ class _AIChatPageState extends State<AIChatPage> {
                                                                         // 用于区分不同的图标
                                                                         width: 30,
                                                                         height: 30,
-                                                                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                                                        colorFilter:
+                                                                            const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                                                                         semanticsLabel: 'send',
                                                                       ),
                                                               ),
