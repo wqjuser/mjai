@@ -1,0 +1,300 @@
+name: tuitu
+description: A new Flutter project.
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.6.7
+
+environment:
+  sdk: '>=3.0.6 <4.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  # 网络请求
+  dio: ^5.7.0
+  # 弹窗
+  flash: ^3.1.1
+  # 数据库
+  supabase_flutter: ^2.8.3
+  # 增强版的图片加载
+  extended_image: ^9.1.0
+  # 窗口管理工具
+  window_manager: ^0.4.3
+  # 实用程序库
+  quiver: ^3.2.2
+  # 路径
+  path: ^1.9.0
+  # 数学公式
+  flutter_math_fork: ^0.7.3
+  latext: ^0.5.0
+  # 打开网址
+  url_launcher: ^6.3.1
+  # 文件系统
+  path_provider: ^2.1.5
+  # 日期格式
+  intl: ^0.20.1
+  # 随机数
+  uuid: ^4.5.1
+  # 加密
+  crypto: ^3.0.6
+  encrypt: ^5.0.3
+  # 网络请求
+  http: ^1.2.2
+  # 状态管理框架
+  provider: ^6.1.2
+  # 二维码
+  pretty_qr_code: ^3.3.0
+  # 加载框
+  flutter_easyloading: ^3.0.5
+  # 文件选择器
+  file_picker: ^8.1.7
+  # 媒体框架
+  media_kit: ^1.1.11 # Primary package.
+  media_kit_video: ^1.2.5 # For video rendering.
+  media_kit_libs_video: any # Native video dependencies.
+  # 视频播放
+  video_player: ^2.9.2
+  # 图片框架
+  image: ^4.5.2
+  # 自定义azure tts
+  flutter_azure_tts:
+    git:
+      url: https://github.com/wqjuser/flutter_azure_tts.git
+      ref: master
+  # 命令行执行
+  process_run: ^1.2.2+1
+  # 获取网络信息
+  network_info_plus: ^6.1.2
+  # 获取包信息
+  package_info_plus: ^8.1.2
+  # get框架
+  get: ^4.6.6
+  # 本地存储
+  get_storage: ^2.1.1
+  # 下拉菜单
+  dropdown_button2: ^2.3.9
+  # 展示svg图片
+  flutter_svg: ^2.0.16
+  # 自适应文件大小输入框
+  auto_size_text_field: ^2.2.4
+  # 播放音频
+  just_audio: ^0.9.42
+  just_audio_windows: ^0.2.2
+  # Yaml
+  yaml: ^3.1.3
+  # JWT
+  dart_jsonwebtoken: ^2.14.2
+  # WebSocket
+  web_socket_channel: ^3.0.1
+  # 选择控件
+  choice: ^2.3.2
+  # alibabaCloudOss
+  flutter_oss_aliyun: ^6.4.2
+  # 日志框架
+  logger: ^2.5.0
+  # 获取视频封面
+  fc_native_video_thumbnail: ^0.16.1
+  # 视频播放器
+  chewie: ^1.9.0
+  # Frequently updated openai's unofficial api repository
+  openai_dart: ^0.4.5
+  #任务栏图标
+  system_tray:
+    git:
+      url: https://github.com/wqjuser/system_tray.git
+      ref: main
+  #下拉刷新和上拉加载
+  pull_to_refresh_flutter3: ^2.0.2
+  # 消息总线
+  event_bus: ^2.0.1
+  # markdown渲染组件
+  flutter_markdown: ^0.7.5
+  markdown: ^7.3.0
+  # 录音
+  record: ^5.2.0
+  openai_realtime_dart: ^0.0.3+1
+  # 瀑布流布局
+  flutter_staggered_grid_view: ^0.7.0
+  # 谷歌AI SDK
+  google_generative_ai: ^0.4.6
+  # 新的富文本组件
+  easy_rich_text: ^2.2.0
+  # 设备信息
+  device_info_plus: ^11.2.0
+  # 拖拽文件
+  desktop_drop: ^0.5.0
+  # 快捷键
+  hotkey_manager: ^0.2.3
+  # 代码预览器
+  universal_code_viewer:
+    git:
+      url: https://github.com/wqjuser/universal_code_viewer.git
+      ref: main
+  shared_preferences: ^2.3.5
+  flutter_riverpod: ^2.6.1
+  freezed: ^2.5.8
+  freezed_annotation: ^2.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/drawer_top_bg.png
+    - assets/images/un_generate_image.png
+    - assets/images/qq_qrcode.webp
+    - assets/images/wx_qrcode.webp
+    - assets/images/merge_up.svg
+    - assets/images/merge_down.svg
+    - assets/images/up_scale_repair.svg
+    - assets/images/up_scale.svg
+    - assets/images/upload_image.svg
+    - assets/images/add_up.svg
+    - assets/images/add_down.svg
+    - assets/images/delete.svg
+    - assets/images/save.svg
+    - assets/images/download_image.svg
+    - assets/images/add.svg
+    - assets/images/remove.svg
+    - assets/images/reasoning.svg
+    - assets/images/tb-app.svg
+    - assets/images/more_menu.svg
+    - assets/images/variation.svg
+    - assets/images/zoom.svg
+    - assets/images/arrow_up.svg
+    - assets/images/seed.svg
+    - assets/images/save_all.svg
+    - assets/images/swap_face.svg
+    - assets/images/upscale.svg
+    - assets/images/return.svg
+    - assets/images/agora.svg
+    - assets/images/squaring.svg
+    - assets/images/re_draw.svg
+    - assets/images/copy_prompt.svg
+    - assets/images/clear.svg
+    - assets/images/tip.svg
+    - assets/images/net.svg
+    - assets/images/model.svg
+    - assets/images/upload_file.svg
+    - assets/images/context.svg
+    - assets/images/delete_context.svg
+    - assets/images/set.svg
+    - assets/images/delete_message.svg
+    - assets/images/copy.svg
+    - assets/images/retry.svg
+    - assets/images/copy_img.svg
+    - assets/images/modify.svg
+    - assets/images/rename.svg
+    - assets/images/new_delete.svg
+    - assets/images/chat_bot_default_avatar.png
+    - assets/images/chat_user_default_avatar.png
+    - assets/images/buy_me_a_coffee.png
+    - assets/images/img_icon.png
+    - assets/images/app_icon.png
+    - assets/images/app_icon.ico
+    - assets/images/claude.png
+    - assets/images/copilot.png
+    - assets/images/doubao.png
+    - assets/images/midjourney.png
+    - assets/images/midjourney_1.png
+    - assets/images/minimax.png
+    - assets/images/moonshot.png
+    - assets/images/01ww.png
+    - assets/images/sunoai.png
+    - assets/images/tyqw.png
+    - assets/images/xfxh.png
+    - assets/images/grok.png
+    - assets/images/gpt-3.png
+    - assets/images/gpt-4.png
+    - assets/images/zpai.png
+    - assets/images/stb.svg
+    - assets/images/send.svg
+    - assets/images/stop.svg
+    - assets/images/share.svg
+    - assets/images/close_window.svg
+    - assets/images/min_window.svg
+    - assets/images/max_window.svg
+    - assets/images/wechat_pay.svg
+    - assets/images/capture.svg
+    - assets/images/yy.svg
+    - assets/images/alipay.svg
+    - assets/images/hybrid.svg
+    - assets/images/into_max_window.svg
+    - assets/images/redraw_part.svg
+    - assets/images/gemini.png
+    - assets/images/share_qrcode.png
+    - assets/images/deepseek.png
+  #   - images/a_dot_ham.jpeg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  fonts:
+    - family: MyFont
+      fonts:
+        - asset: assets/fonts/my_font.ttf
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
